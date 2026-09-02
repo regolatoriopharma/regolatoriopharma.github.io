@@ -1,0 +1,128 @@
+<!DOCTYPE html><html lang="it"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Iscriviti gratis al digest quotidiano di Osservatorio Regolatorio Pharma: ogni mattina alle 7:00 le pubblicazioni di AIFA, Gazzetta Ufficiale, EMA, HMA, EU Union Register e TrovaNorme in un'unica email.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#x1F48A;</text></svg>">
+<link rel="stylesheet" href="fonts.css">
+<title>Iscriviti al digest &ndash; Osservatorio Regolatorio Pharma</title></head><body>
+<div style="font-family:'Public Sans',Arial,Helvetica,sans-serif;color:#1a1a1a;max-width:680px">
+
+<h2 style="margin:0 0 4px">Iscriviti al digest</h2>
+<p style="color:#0b5394;margin:0 0 16px;font-size:13px;font-style:italic">Regulatory intelligence quotidiana e gratuita</p>
+
+<p style="color:#333;margin:0 0 20px;font-size:14px;line-height:1.6">Ogni mattina alle 7:00 ricevi in un&rsquo;unica email le pubblicazioni regolatorie del giorno &mdash; AIFA, Gazzetta Ufficiale, EMA, HMA, EU Union Register e la newsletter TrovaNorme. Gratuito, senza pubblicit&agrave;, senza tracciamento.</p>
+
+<div style="background:#eef4fb;border:1px solid #cfe0f2;border-radius:8px;padding:16px;margin:0 0 24px">
+
+  <form id="modulo" novalidate>
+    <p style="margin:0 0 12px;font-size:15px;font-weight:bold;color:#0b5394">Iscriviti gratis</p>
+
+    <p style="margin:0 0 12px">
+      <label for="email" style="display:block;font-size:13px;color:#333;margin:0 0 5px">Il tuo indirizzo email</label>
+      <input type="email" id="email" autocomplete="email" placeholder="nome@azienda.it"
+             style="width:100%;box-sizing:border-box;padding:10px;border:1px solid #cfe0f2;border-radius:6px;font-size:14px;font-family:inherit">
+    </p>
+
+    <p style="margin:0 0 14px;font-size:12px;color:#333;line-height:1.5">
+      <label><input type="checkbox" id="consenso" style="margin-right:6px;vertical-align:top">Acconsento al trattamento del mio indirizzo email per ricevere il digest quotidiano, come descritto nell&rsquo;<a href="privacy.html" style="color:#0b5394">informativa privacy</a>.</label>
+    </p>
+
+    <!-- Campo esca: invisibile a chi legge, compilato dai programmi automatici. -->
+    <div style="position:absolute;left:-9999px" aria-hidden="true">
+      <label>Non compilare<input type="text" id="sito" tabindex="-1" autocomplete="off"></label>
+    </div>
+
+    <p style="margin:0 0 12px">
+      <button type="submit" id="invia"
+              style="display:inline-block;background:#0b5394;color:#fff;border:none;cursor:pointer;
+                     padding:11px 22px;border-radius:6px;font-size:14px;font-weight:bold;font-family:inherit">Iscrivimi &rarr;</button>
+    </p>
+
+    <p id="errore" style="display:none;margin:0 0 12px;font-size:13px;color:#b00;line-height:1.5"></p>
+
+    <p style="margin:0;font-size:12px;color:#555;line-height:1.5">Due passaggi: ti scriviamo per verificare che l&rsquo;indirizzo sia tuo, tu confermi con un clic. Puoi <a href="cancella.html" style="color:#0b5394">cancellarti</a> quando vuoi.</p>
+  </form>
+
+  <div id="esito" style="display:none;font-size:14px;color:#333;line-height:1.6"></div>
+
+  <noscript>
+    <p style="margin:0;font-size:13px;color:#333;line-height:1.6">Questo modulo ha bisogno di JavaScript. Se il tuo browser non lo permette, scrivi a <a href="mailto:info@regolatoriopharma.it" style="color:#0b5394">info@regolatoriopharma.it</a>: ti iscriviamo noi.</p>
+  </noscript>
+
+</div>
+
+<p style="margin:0 0 16px;font-size:14px">
+  <a href="index.html" style="color:#0b5394">&larr; Torna alla home</a> &nbsp;&middot;&nbsp;
+  <a href="archivio.html" style="color:#0b5394">Archivio</a> &nbsp;&middot;&nbsp;
+  <a href="about.html" style="color:#0b5394">Chi &egrave;</a>
+</p>
+
+<hr style="border:none;border-top:1px solid #ddd;margin:24px 0 12px">
+<p style="color:#999;font-size:11px;margin:0">Servizio indipendente, gratuito. &mdash; <a href="privacy.html" style="color:#999">Privacy</a></p>
+
+</div>
+<script>(function () {
+  var ENDPOINT = 'https://script.google.com/macros/s/AKfycbxdNi-6WUwGF71AURqu_v8xmIiXZ-ZhW_BaTm0PiCPx4IZStmZf7Lf3GCml-uHqaRYhlw/exec';
+
+  var apertura = Date.now();
+  var modulo = document.getElementById('modulo');
+  var email = document.getElementById('email');
+  var consenso = document.getElementById('consenso');
+  var sito = document.getElementById('sito');
+  var invia = document.getElementById('invia');
+  var errore = document.getElementById('errore');
+  var esito = document.getElementById('esito');
+
+  function param(nome) {
+    var m = new RegExp('[?&]' + nome + '=([^&#]*)').exec(location.search);
+    return m ? decodeURIComponent(m[1].replace(/\+/g, ' ')) : '';
+  }
+  var canale = param('da');
+
+  function mostraErrore(testo) {
+    errore.textContent = testo;
+    errore.style.display = 'block';
+    invia.disabled = false;
+    invia.style.opacity = '1';
+    invia.textContent = 'Iscrivimi →';
+  }
+
+  modulo.addEventListener('submit', function (e) {
+    e.preventDefault();
+    errore.style.display = 'none';
+
+    if (!email.value.trim()) { mostraErrore('Scrivi il tuo indirizzo email.'); return; }
+    if (!consenso.checked) { mostraErrore('Per iscriverti devi accettare il trattamento del tuo indirizzo email.'); return; }
+
+    invia.disabled = true;
+    invia.style.opacity = '0.6';
+    invia.textContent = 'Invio in corso…';
+
+    fetch(ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({
+        azione: 'iscrizione',
+        email: email.value.trim(),
+        consenso: consenso.checked,
+        secondi: (Date.now() - apertura) / 1000,
+        sito: sito.value,
+        canale: canale
+      })
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (d && d.ok) {
+          modulo.style.display = 'none';
+          esito.innerHTML = '<p style="margin:0 0 10px;font-size:15px;font-weight:bold;color:#0b5394">Controlla la tua posta</p>' +
+            '<p style="margin:0">' + d.messaggio + '</p>';
+          esito.style.display = 'block';
+        } else {
+          mostraErrore((d && d.messaggio) || 'Qualcosa non ha funzionato. Riprova.');
+        }
+      })
+      .catch(function () {
+        mostraErrore('Non siamo riusciti a registrare la richiesta. Riprova fra qualche minuto, oppure scrivi a info@regolatoriopharma.it e ti iscriviamo a mano.');
+      });
+  });
+})();</script>
+</body></html>

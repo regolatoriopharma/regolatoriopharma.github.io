@@ -1,0 +1,109 @@
+<!DOCTYPE html><html lang="it"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Cancellati dal digest di Osservatorio Regolatorio Pharma.">
+<meta name="robots" content="noindex,follow">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#x1F48A;</text></svg>">
+<link rel="stylesheet" href="fonts.css">
+<title>Cancellati dal digest &ndash; Osservatorio Regolatorio Pharma</title></head><body>
+<div style="font-family:'Public Sans',Arial,Helvetica,sans-serif;color:#1a1a1a;max-width:680px">
+
+<h2 style="margin:0 0 4px">Cancellati dal digest</h2>
+<p style="color:#0b5394;margin:0 0 16px;font-size:13px;font-style:italic">Regulatory intelligence quotidiana e gratuita</p>
+
+<p style="color:#333;margin:0 0 20px;font-size:14px;line-height:1.6">Scrivi qui l&rsquo;indirizzo che riceve il digest. Nessuna domanda, nessun modulo da compilare: la cancellazione viene eseguita entro un giorno lavorativo e ricevi una conferma.</p>
+
+<div style="background:#eef4fb;border:1px solid #cfe0f2;border-radius:8px;padding:16px;margin:0 0 20px">
+
+  <form id="modulo" novalidate>
+    <p style="margin:0 0 12px">
+      <label for="email" style="display:block;font-size:13px;color:#333;margin:0 0 5px">Indirizzo email da cancellare</label>
+      <input type="email" id="email" autocomplete="email" placeholder="nome@azienda.it"
+             style="width:100%;box-sizing:border-box;padding:10px;border:1px solid #cfe0f2;border-radius:6px;font-size:14px;font-family:inherit">
+    </p>
+
+    <div style="position:absolute;left:-9999px" aria-hidden="true">
+      <label>Non compilare<input type="text" id="sito" tabindex="-1" autocomplete="off"></label>
+    </div>
+
+    <p style="margin:0 0 12px">
+      <button type="submit" id="invia"
+              style="display:inline-block;background:#0b5394;color:#fff;border:none;cursor:pointer;
+                     padding:11px 22px;border-radius:6px;font-size:14px;font-weight:bold;font-family:inherit">Cancellami</button>
+    </p>
+
+    <p id="errore" style="display:none;margin:0;font-size:13px;color:#b00;line-height:1.5"></p>
+  </form>
+
+  <div id="esito" style="display:none;font-size:14px;color:#333;line-height:1.6"></div>
+
+  <noscript>
+    <p style="margin:0;font-size:13px;color:#333;line-height:1.6">Questo modulo ha bisogno di JavaScript. Usa la via immediata qui sotto, oppure scrivi a <a href="mailto:info@regolatoriopharma.it" style="color:#0b5394">info@regolatoriopharma.it</a>.</p>
+  </noscript>
+
+</div>
+
+<p style="margin:0 0 24px;font-size:12px;color:#666;line-height:1.6">Ti serve subito, senza aspettare? Invia un&rsquo;email vuota a <a href="mailto:osservatorio-pharma+unsubscribe@googlegroups.com" style="color:#666">osservatorio-pharma+unsubscribe@googlegroups.com</a>: la lista &egrave; gestita con Google Groups e la rimozione &egrave; immediata.</p>
+
+<p style="margin:0 0 16px;font-size:14px">
+  <a href="index.html" style="color:#0b5394">&larr; Torna alla home</a> &nbsp;&middot;&nbsp;
+  <a href="iscriviti.html" style="color:#0b5394">Iscriviti</a>
+</p>
+
+<hr style="border:none;border-top:1px solid #ddd;margin:24px 0 12px">
+<p style="color:#999;font-size:11px;margin:0">Servizio indipendente, gratuito. &mdash; <a href="privacy.html" style="color:#999">Privacy</a></p>
+
+</div>
+<script>(function () {
+  var ENDPOINT = 'https://script.google.com/macros/s/AKfycbxdNi-6WUwGF71AURqu_v8xmIiXZ-ZhW_BaTm0PiCPx4IZStmZf7Lf3GCml-uHqaRYhlw/exec';
+
+  var modulo = document.getElementById('modulo');
+  var email = document.getElementById('email');
+  var sito = document.getElementById('sito');
+  var invia = document.getElementById('invia');
+  var errore = document.getElementById('errore');
+  var esito = document.getElementById('esito');
+
+  function mostraErrore(testo) {
+    errore.textContent = testo;
+    errore.style.display = 'block';
+    invia.disabled = false;
+    invia.style.opacity = '1';
+    invia.textContent = 'Cancellami';
+  }
+
+  modulo.addEventListener('submit', function (e) {
+    e.preventDefault();
+    errore.style.display = 'none';
+
+    if (!email.value.trim()) { mostraErrore('Scrivi l’indirizzo da cancellare.'); return; }
+
+    invia.disabled = true;
+    invia.style.opacity = '0.6';
+    invia.textContent = 'Invio in corso…';
+
+    fetch(ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({
+        azione: 'cancellazione',
+        email: email.value.trim(),
+        sito: sito.value
+      })
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (d && d.ok) {
+          modulo.style.display = 'none';
+          esito.innerHTML = '<p style="margin:0 0 10px;font-size:15px;font-weight:bold;color:#0b5394">Richiesta registrata</p>' +
+            '<p style="margin:0">' + d.messaggio + '</p>';
+          esito.style.display = 'block';
+        } else {
+          mostraErrore((d && d.messaggio) || 'Qualcosa non ha funzionato. Riprova.');
+        }
+      })
+      .catch(function () {
+        mostraErrore('Non siamo riusciti a registrare la richiesta. Usa la via immediata qui sotto, oppure scrivi a info@regolatoriopharma.it.');
+      });
+  });
+})();</script>
+</body></html>
