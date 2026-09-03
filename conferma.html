@@ -10,12 +10,21 @@
 <h2 style="margin:0 0 4px">Conferma iscrizione</h2>
 <p style="color:#0b5394;margin:0 0 20px;font-size:13px;font-style:italic">Regulatory intelligence quotidiana e gratuita</p>
 
-<div id="riquadro" style="background:#eef4fb;border:1px solid #cfe0f2;border-radius:8px;padding:16px;margin:0 0 24px">
-  <p id="titolo" style="margin:0 0 10px;font-size:15px;font-weight:bold;color:#0b5394">Un momento&hellip;</p>
-  <p id="messaggio" style="margin:0;font-size:14px;color:#333;line-height:1.6">Stiamo registrando la conferma.</p>
+<div style="background:#eef4fb;border:1px solid #cfe0f2;border-radius:8px;padding:16px;margin:0 0 24px">
+
+  <p id="titolo" style="margin:0 0 10px;font-size:15px;font-weight:bold;color:#0b5394">Manca solo un clic</p>
+  <p id="messaggio" style="margin:0 0 14px;font-size:14px;color:#333;line-height:1.6">Premi il pulsante per completare l&rsquo;iscrizione. Da domani mattina ricevi il digest.</p>
+
+  <p id="riga-pulsante" style="margin:0">
+    <button type="button" id="conferma"
+            style="display:inline-block;background:#0b5394;color:#fff;border:none;cursor:pointer;
+                   padding:11px 22px;border-radius:6px;font-size:14px;font-weight:bold;font-family:inherit">Conferma l&rsquo;iscrizione</button>
+  </p>
+
   <noscript>
-    <p style="margin:10px 0 0;font-size:13px;color:#333;line-height:1.6">Questa pagina ha bisogno di JavaScript. Torna all&rsquo;email che ti abbiamo mandato e apri il secondo collegamento, quello di riserva, oppure scrivi a <a href="mailto:info@regolatoriopharma.it" style="color:#0b5394">info@regolatoriopharma.it</a>.</p>
+    <p style="margin:10px 0 0;font-size:13px;color:#333;line-height:1.6">Questa pagina ha bisogno di JavaScript. Se il tuo browser non lo permette, scrivi a <a href="mailto:info@regolatoriopharma.it" style="color:#0b5394">info@regolatoriopharma.it</a>: completiamo noi l&rsquo;iscrizione.</p>
   </noscript>
+
 </div>
 
 <p style="margin:0 0 16px;font-size:14px">
@@ -32,8 +41,14 @@
 
   var titolo = document.getElementById('titolo');
   var messaggio = document.getElementById('messaggio');
+  var riga = document.getElementById('riga-pulsante');
+  var pulsante = document.getElementById('conferma');
 
-  function mostra(t, m) { titolo.textContent = t; messaggio.innerHTML = m; }
+  function mostra(t, m) {
+    titolo.textContent = t;
+    messaggio.innerHTML = m;
+    riga.style.display = 'none';
+  }
 
   var m = /[?&]t=([^&#]*)/.exec(location.search);
   var token = m ? decodeURIComponent(m[1]) : '';
@@ -45,20 +60,36 @@
     return;
   }
 
-  fetch(ENDPOINT + '?formato=json&t=' + encodeURIComponent(token))
-    .then(function (r) { return r.json(); })
-    .then(function (d) {
-      if (d && d.ok) {
-        mostra(d.titolo || 'Iscrizione confermata', d.messaggio || '');
-      } else {
-        mostra((d && d.titolo) || 'Conferma non riuscita',
-          ((d && d.messaggio) || '') + ' <a href="iscriviti.html" style="color:#0b5394">Iscriviti di nuovo</a>.');
-      }
+  // La conferma parte SOLO da questo clic, e viaggia come POST.
+  // Il 02/09/2026 il gateway di sicurezza di una casella aziendale ha aperto
+  // da solo il link dell'email 31 secondi dopo l'invio e ha confermato al
+  // posto della persona: aprire una pagina non deve cambiare niente.
+  pulsante.addEventListener('click', function () {
+    pulsante.disabled = true;
+    pulsante.style.opacity = '0.6';
+    pulsante.textContent = 'Un momento…';
+
+    fetch(ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ azione: 'conferma', t: token })
     })
-    .catch(function () {
-      mostra('Non siamo riusciti a confermare',
-        'Riprova fra qualche minuto ricaricando questa pagina. Se non funziona, scrivi a ' +
-        '<a href="mailto:info@regolatoriopharma.it" style="color:#0b5394">info@regolatoriopharma.it</a>: ti confermiamo noi.');
-    });
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (d && d.ok) {
+          mostra(d.titolo || 'Iscrizione confermata', d.messaggio || '');
+        } else {
+          mostra((d && d.titolo) || 'Conferma non riuscita',
+            ((d && d.messaggio) || '') + ' <a href="iscriviti.html" style="color:#0b5394">Iscriviti di nuovo</a>.');
+        }
+      })
+      .catch(function () {
+        pulsante.disabled = false;
+        pulsante.style.opacity = '1';
+        pulsante.textContent = 'Conferma l’iscrizione';
+        messaggio.innerHTML = 'Non siamo riusciti a registrare la conferma. Riprova fra qualche minuto, oppure scrivi a ' +
+          '<a href="mailto:info@regolatoriopharma.it" style="color:#0b5394">info@regolatoriopharma.it</a>.';
+      });
+  });
 })();</script>
 </body></html>
